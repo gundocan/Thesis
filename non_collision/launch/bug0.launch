@@ -1,0 +1,5 @@
+<launch>
+   <node pkg="non_collision" type="bug0.py" name="bug0" output="screen">
+   </node>
+   <include file="$(find aro_sim)/launch/onlysim.launch"/>
+</launch>
