@@ -8,6 +8,8 @@
     <material>Gazebo/DarkGrey</material>
   </gazebo>
 
+
+
   <gazebo reference="wheel_left_link">
     <mu1>0.1</mu1>
     <mu2>0.1</mu2>
@@ -48,19 +50,21 @@
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 
+
+
   <gazebo>
     <plugin name="turtlebot3_burger_controller" filename="libgazebo_ros_diff_drive.so">
       <commandTopic>cmd_vel</commandTopic>
       <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
-      <odometrySource>encoder</odometrySource>  <!-- world -->
+      <odometrySource>world</odometrySource>  <!-- world(encoder)update rate 30 -->
       <publishOdomTF>true</publishOdomTF>
       <robotBaseFrame>base_footprint</robotBaseFrame>
       <publishWheelTF>false</publishWheelTF>
       <publishTf>true</publishTf>
       <publishWheelJointState>true</publishWheelJointState>
       <legacyMode>false</legacyMode>
-      <updateRate>30</updateRate>
+      <updateRate>50</updateRate>
       <leftJoint>wheel_left_joint</leftJoint>
       <rightJoint>wheel_right_joint</rightJoint>
       <wheelSeparation>0.160</wheelSeparation>
@@ -153,7 +157,7 @@
       <plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">
         <baseline>0.2</baseline>
         <alwaysOn>true</alwaysOn>
-        <updateRate>30.0</updateRate>
+        <updateRate>50.0</updateRate>
         <cameraName>camera</cameraName>
         <frameName>camera_rgb_optical_frame</frameName>
         <imageTopicName>rgb/image_raw</imageTopicName>
