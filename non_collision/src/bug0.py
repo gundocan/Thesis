@@ -23,24 +23,25 @@ class bug():
         self.odo=rospy.Subscriber("/odom", Odometry, self.pose_callback)      #listen to odometry 	
         self.cmd_vel_topic = "/cmd_vel"   
         self.rviz_goal = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.destcallback) # listen to Rviz 2D nav goal
-        self.odometry_frame = rospy.get_param("~odom_frame", "odom") #get odom frame 
-        print("ODO: ", self.odometry_frame)   
-        self.baseFootprint_frame = rospy.get_param("~base_footprint_frame", "base_footprint") #get base_footprint frame 
-        print("base :", self.baseFootprint_frame)
+        #self.odometry_frame = rospy.get_param("~odom_frame", "odom") #get odom frame 
+        #print("ODO: ", self.odometry_frame)   
+        #self.baseFootprint_frame = rospy.get_param("~base_footprint_frame", "base_footprint") #get base_footprint frame 
+        #print("base :", self.baseFootprint_frame)
 
-        self.tf_buffer = tf2_ros.Buffer(cache_time=rospy.Duration(10))
-        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
-        try:   #transformation from base_footprint to odom frame 
-            transform_goal = self.tf_buffer.lookup_transform(self.baseFootprint_frame, self.odometry_frame,   
-                                                             rospy.Time(), rospy.Duration(0.5))
-            print("Transformation working")
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rospy.logwarn("Cannot get the goal position! ")
-        self.T = ros_numpy.numpify(transform_goal.transform)
+        #self.tf_buffer = tf2_ros.Buffer(cache_time=rospy.Duration(10))
+        #self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
+        #try:   #transformation from base_footprint to odom frame 
+         #   transform_goal = self.tf_buffer.lookup_transform(self.baseFootprint_frame, self.odometry_frame,   
+         #                                                    rospy.Time(), rospy.Duration(0.5))
+          #  print("Transformation working")
+        #except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+          #  rospy.logwarn("Cannot get the goal position! ")
+        #self.T = ros_numpy.numpify(transform_goal.transform)
 
         # x_goal = rviz_goal.pose.pose.position.x
         # y_goal = rviz_goal.pose.pose.position.y
-        self.velocity_publisher = rospy.Publisher(self.cmd_vel_topic, Twist, queue_size=10) #Velocity  publish 
+        self.velocity_publisher = rospy.Publisher(self.cmd_vel_topic, Twist, queue_size=10) #Velocity  publish
+        self.pose_pub = rospy.Publisher( "/local_goal", PoseStamped , queue_size = 3) 
         self.x_robot = 0
         self.y_robot = 0
         self.yaw = 0
@@ -99,7 +100,8 @@ class bug():
         self.min_value_right = min(right_range)
         self.min_value_front = min(front_range)
 
-    def pose_callback(self,pose_data):
+
+    def pose_callback(self, pose_data):
 
         #Get robot pose
         self.x_robot = pose_data.pose.pose.position.x
@@ -113,41 +115,33 @@ class bug():
         pose_data.pose.pose.orientation.w)
         rpy = tf.transformations.euler_from_quaternion(quaternion)
         self.yaw = rpy[2]
-
     def destcallback(self, goal_data):
 
-        #Get Rviz 2D-nav goal x and y coordinates
-        x_goal_pre= goal_data.pose.position.x
-        y_goal_pre = goal_data.pose.position.y
-        print("First :",x_goal_pre,y_goal_pre)
-        matrix = [x_goal_pre,y_goal_pre,0,1]
-        AT = self.T.dot(transpose(matrix))
-        self.x_goal = AT[0]
-        self.y_goal = AT[1]
+        # Get Rviz 2D-nav goal x and y coordinates
+        self.x_goal = goal_data.pose.position.x
+        self.y_goal = goal_data.pose.position.y
+        self.pose_pub.publish(goal_data)
 
-        print("Second Modified transformation:",self.x_goal,self.y_goal)
+    def rotate_to_goal_state(self):  # Rotate towards goal
+        # print(" Rotating towards goal")
 
-
-    def rotate_to_goal_state(self): # Rotate towards goal
-        #print(" Rotating towards goal")
-
-        desired_angle_goal = math.atan2(self.y_goal-self.y_robot,self.x_goal-self.x_robot)
-        K_angular = 0.2 #angular velocity constant
-        angular_speed = (desired_angle_goal-self.yaw)*K_angular
+        desired_angle_goal = math.atan2(self.y_goal - self.y_robot, self.x_goal - self.x_robot)
+        K_angular = 0.2  # angular velocity constant
+        angular_speed = (desired_angle_goal - self.yaw) * K_angular
         while True:
             self.vel_msg.angular.z = angular_speed
             self.velocity_publisher.publish(self.vel_msg)
             if desired_angle_goal < 0:
-                if ((desired_angle_goal)-self.yaw) > -0.1:
+                if ((desired_angle_goal) - self.yaw) > -0.1:
                     break
             else:
-                if ((desired_angle_goal)-self.yaw) < 0.1:
+                if ((desired_angle_goal) - self.yaw) < 0.1:
                     break
-        self.vel_msg.angular.z=0
+        self.vel_msg.angular.z = 0
         self.velocity_publisher.publish(self.vel_msg)
 
     def move_forward_state(self):
-        #print("Moving forward")
+        # print("Moving forward")
         self.vel_msg = Twist()
         self.vel_msg.linear.x = 0.2
         self.velocity_publisher.publish(self.vel_msg)
@@ -156,17 +150,17 @@ class bug():
     def follow_wall_state(self):
         if self.min_value_right > self.min_value_left:
             angle = self.get_wall_angle(True)
-            #print(">>>>> Change angle to right (90 degrees): ", angle)
+            # print(">>>>> Change angle to right (90 degrees): ", angle)
         else:
             angle = self.get_wall_angle(False)
-            #print(">>>>> Change angle to left (90 degrees): ", angle)
-        if (angle-self.yaw) < 0:
-            while (angle-self.yaw) < -0.1:
-                self.vel_msg.angular.z = (angle-self.yaw)*0.3
+            # print(">>>>> Change angle to left (90 degrees): ", angle)
+        if (angle - self.yaw) < 0:
+            while (angle - self.yaw) < -0.1:
+                self.vel_msg.angular.z = (angle - self.yaw) * 0.3
                 self.velocity_publisher.publish(self.vel_msg)
         else:
-            while (angle-self.yaw) > 0.1:
-                self.vel_msg.angular.z = (angle-self.yaw)*0.3
+            while (angle - self.yaw) > 0.1:
+                self.vel_msg.angular.z = (angle - self.yaw) * 0.3
                 self.velocity_publisher.publish(self.vel_msg)
         self.vel_msg.angular.z = 0
         # Move robot forward after for 1 sec each rotation to avoid getting stuck in loop
@@ -175,29 +169,32 @@ class bug():
             t0 = rospy.Time.now().to_sec()
             while time < 1.0 and self.min_value_front > 0.4:
                 t1 = rospy.Time.now().to_sec()
-                time = t1-t0
+                time = t1 - t0
                 self.vel_msg.linear.x = 0.2
                 self.velocity_publisher.publish(self.vel_msg)
 
-
-    def is_goal_reached(self): # check if goal is reached
-        if (self.x_goal - 0.1 <self.x_robot < self.x_goal + 0.1) and (self.y_goal - 0.1 < self.y_robot < self.y_goal + 0.1):
+    def is_goal_reached(self):  # check if goal is reached
+        if (self.x_goal - 0.1 < self.x_robot < self.x_goal + 0.1) and (
+                self.y_goal - 0.1 < self.y_robot < self.y_goal + 0.1):
             return True
         return False
 
-    def is_towards_goal(self): # check if robot in direction of the goal
-        desired_angle_goal = math.atan2(self.y_goal-self.y_robot,self.x_goal-self.x_robot)
-        if abs((desired_angle_goal)-self.yaw) < 0.4:
+    def is_towards_goal(self):  # check if robot in direction of the goal
+        desired_angle_goal = math.atan2(self.y_goal - self.y_robot, self.x_goal - self.x_robot)
+        if abs((desired_angle_goal) - self.yaw) < 0.4:
             return True
         return False
 
-    def get_wall_angle(self,is_right): # Get the wall angle
+    def get_wall_angle(self, is_right):  # Get the wall angle
         angle = 0
-        if ((self.min_value_left > 0.6 and self.yaw > 0) or (self.min_value_right > 0.6 and self.yaw < 0)) and not ((0.0 < self.yaw < 0.002) or (-3.16< self.yaw <-3.0)):
+        if ((self.min_value_left > 0.6 and self.yaw > 0) or (self.min_value_right > 0.6 and self.yaw < 0)) and not (
+                (0.0 < self.yaw < 0.002) or (-3.16 < self.yaw < -3.0)):
             angle = 0.0 if is_right else -math.pi
         else:
-            angle = -math.pi/2 if is_right else math.pi/2
+            angle = -math.pi / 2 if is_right else math.pi / 2
         return angle
+
+
 
 if __name__ == '__main__':
 
