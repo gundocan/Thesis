@@ -2,8 +2,7 @@
 ![](images/ekf_result.png)
 
 
+Experiment results
 
-2)Then in terminal write the  "catkin build" command
+![](images/map_2.JPG)
 
-
-3)To launch the turtlebot use the "roslaunch non_collision bug0.py" command then it will run the DWA algorithm
