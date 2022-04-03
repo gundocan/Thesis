@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+
+   <!-- <node pkg="non_collision" type="robot_pose.py" name="apriltag_robot_pose" />-->
+   <node pkg="motion_plan" type="follow_wall.py" name="wall_follower" />
+   <node pkg="motion_plan" type="go_to_point.py" name="go_to_point" />
+   <!-- <node pkg="non_collision" type="dwa_last.py" name="dwa_2" output="screen" />-->
+   <node pkg="motion_plan" type="bug2.py" name="bug0" output="screen" />
+   <!--<node pkg="non_collision" type="bug0_m.py" name="bug" output="screen" />-->
+   <!--</node>-->
+   
+   <!--<node pkg="non_collision" type="dwa_last.py" name="dwa_2" output="screen" />-->
+   
+</launch>

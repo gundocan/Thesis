@@ -1,0 +1,119 @@
+---
+-
+  id: 0
+  frame_id: tag_0
+  size: 0.25
+-
+  id: 1
+  frame_id: tag_1
+  size: 0.25
+- 
+  id: 2
+  frame_id: tag_2
+  size: 0.25
+- 
+  id: 3
+  frame_id: tag_3
+  size: 0.25
+- 
+  id: 4
+  frame_id: tag_4
+  size: 0.25
+- 
+  id: 5
+  frame_id: tag_5
+  size: 0.25
+- 
+  id: 6
+  frame_id: tag_6
+  size: 0.25
+- 
+  id: 7
+  frame_id: tag_7
+  size: 0.25
+- 
+  id: 8
+  frame_id: tag_8
+  size: 0.25
+- 
+  id: 9
+  frame_id: tag_9
+  size: 0.25
+
+-  
+  id: 10
+  frame_id: tag_10
+  size: 0.25
+- 
+  id: 11
+  frame_id: tag_11
+  size: 0.25
+- 
+  id: 12
+  frame_id: tag_12
+  size: 0.25
+- 
+  id: 13
+  frame_id: tag_13
+  size: 0.25
+- 
+  id: 14
+  frame_id: tag_14
+  size: 0.25
+- 
+  id: 15
+  frame_id: tag_15
+  size: 0.25
+- 
+  id: 16
+  frame_id: tag_16
+  size: 0.25
+- 
+  id: 17
+  frame_id: tag_17
+  size: 0.25
+- 
+  id: 18
+  frame_id: tag_18
+  size: 0.25
+- 
+  id: 19
+  frame_id: tag_19
+  size: 0.25
+- 
+  id: 20
+  frame_id: tag_20
+  size: 0.25
+
+- 
+  id: 22
+  frame_id: tag_22
+  size: 0.25
+- 
+  id: 23
+  frame_id: tag_23
+  size: 0.25
+- 
+  id: 24
+  frame_id: tag_24
+  size: 0.25
+- 
+  id: 25
+  frame_id: tag_25
+  size: 0.25
+- 
+  id: 27
+  frame_id: tag_27
+  size: 0.25
+- 
+  id: 28
+  frame_id: tag_28
+  size: 0.25
+- 
+  id: 29
+  frame_id: tag_29
+  size: 0.25
+- 
+  id: 30
+  frame_id: tag_30
+  size: 0.25

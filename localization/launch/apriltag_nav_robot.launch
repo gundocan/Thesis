@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+
+   <!-- <node pkg="non_collision" type="robot_pose.py" name="apriltag_robot_pose" />-->
+   <!-- <node pkg="motion_plan" type="follow_wall.py" name="wall_follower" />-->
+   <!-- <node pkg="motion_plan" type="go_to_point.py" name="go_to_point" />-->
+   <!--0 <node pkg="non_collision" type="dwa_last.py" name="dwa_2" output="screen" />-->
+   <!-- <node pkg="motion_plan" type="bug2.py" name="bug0" output="screen" />-->
+   <!--<node pkg="non_collision" type="bug0_m.py" name="bug" output="screen" />-->
+   <!--</node>-->
+   <!--<include file="$(find aro_sim)/launch/onlysim.launch"/>-->
+   <!--<node pkg="non_collision" type="dwa_last.py" name="dwa_2" output="screen" />-->
+   
+    <!--<include file="$(find turtlebot_bringup)/launch/minimal.launch"/>-->
+   <!-- <include file="$(find realsense2_camera)/launch/rs_camera.launch"/>-->
+    <!--<include file="$(find vicon_bridge)/launch/vicon.launch"/>-->
+
+   <include file="$(find apriltag_ros)/launch/continuous_detection.launch"/>
+   <include file="$(find non_collision)/launch/tag_pose_broadcaster.launch"/>
+   
+   <!--<arg name="map_file" value="map/small_square_map.yaml">-->
+   <!--</arg>-->
+   <!--<node name="map_server" pkg="map_server" type="map_server" args=" $(find non_collision)/$(arg map_file)" />-->
+   <!--<node pkg="non_collision" type="robot_pose_broadcaster.py" name="robot_pose_broadcaster" />-->
+   <!--<node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop" output="screen"/>-->
+   <!--<include file="$(find turtlebot3_teleop)/launch/turtlebot3_teleop_key.launch"/>-->
+   <!--<node pkg="turtlebot_teleop" type="turtlebot_teleop_key" name="turtlebot_teleop_keyboard"  output="screen">-->
+    <!--<param name="scale_linear" value="0.5" type="double"/>-->
+    <!--<param name="scale_angular" value="1.5" type="double"/>-->
+   <!-- <remap from="turtlebot_teleop_keyboard/cmd_vel" to="/mobile_base/commands/velocity"/>-->
+    
+   <!--</node>-->
+
+
+</launch>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Launches static transform broadcaster node to publish world frame to tag frame transforms -->
+
+<launch>
+
+<arg name="tag_poses_file_name" default="tag_poses_small_world.yaml" />
+
+  <node pkg="non_collision" type="tag_pose_broadcaster.py" name="tag_broadcaster" output="screen">
+    <param name="tag_poses_param_path" value="$(find non_collision)/config/$(arg tag_poses_file_name)"/>
+  </node>
+
+</launch>
