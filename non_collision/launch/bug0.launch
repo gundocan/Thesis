@@ -1,6 +1,0 @@
-<launch>
-   <node pkg="non_collision" type="dwa.py" name="dwa" output="screen">
-   </node>
-   <include file="$(find aro_sim)/launch/onlysim.launch"/>
-   <!--<include file="$(find apriltag_ros)/launch/continuous_detection.launch"/>--> 
-</launch>
