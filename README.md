@@ -1,6 +1,6 @@
 # Thesis
+![](images/ekf_result.png)
 
-1)Copy the 2 files (aro_sim, non_collision ) and paste in the Ros workspace
 
 
 2)Then in terminal write the  "catkin build" command
